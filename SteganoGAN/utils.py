@@ -35,7 +35,7 @@ hidden_size = 32
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 LOAD_MODEL = True
-PRE_TRAINED_MODEL_PATH = 'image_models/DenseEncoder_DenseDecoder_0.042_2020-07-23_02_08_27.dat'
+PRE_TRAINED_MODEL_PATH = '../image_models/DenseEncoder_DenseDecoder_0.042_2020-07-23_02_08_27.dat'
 
 
 decoder = DenseDecoder(data_depth, hidden_size).to(device)
@@ -106,7 +106,7 @@ def bytearray_to_text(x):
 
         return text.decode("utf-8")
 
-    except BaseException as e:
+    except BaseException:
         return False
 
 
