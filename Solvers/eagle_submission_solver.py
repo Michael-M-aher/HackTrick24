@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import load
 import requests
 from keras.models import load_model
 import pickle
@@ -14,7 +15,7 @@ def load_scaler():
     '''
     Load your scaler here and return it
     '''
-    with open('./model/scaler.pkl', 'rb') as f:
+    with open('model/scaler.pkl', 'rb') as f:
         scaler = pickle.load(f)
     return scaler
 
@@ -22,7 +23,7 @@ def load_tf_model():
     '''
     Load your model here and return it
     '''
-    model = load_model('./model/model.h5')
+    model = load_model('model_footprints')
     return model
 
 scaler = load_scaler()
@@ -123,6 +124,35 @@ def rec(footprints,first=False):
     res = skip_msg(team_id) 
     return rec(res)
 
+def sol(input_footprints):
+    global footprints
+    footprints = input_footprints.json()['footprint']
+    first = True
+    while True:
+        skip = True
+        if not first and (footprints.text == 'End of message reached'):
+            break
+        elif not first:
+            footprints = footprints.json()['nextFootprint']
+        first = False
+        for channel_id, footprint in footprints.items():
+            if select_channel(footprint):
+                skip = False
+                encoded_msg = request_msg(team_id, int(channel_id))
+                decoded_msg = decode(encoded_msg)
+                print('decoded_msg: ', decoded_msg)
+                res = submit_msg(team_id, decoded_msg)
+                # if res == 'End of message reached' break else request next message 
+                footprints = res
+                break
+        if skip:
+            footprints = skip_msg(team_id)
+
+def get_remaining_attempts(team_id):
+    req = requests.post("http://13.53.169.72:5000/attempts/student", json = {"teamId": team_id})
+    print(req.json())
+
+
 def submit_eagle_attempt(team_id):
     '''
      Call this function to start playing as an eagle. 
@@ -136,9 +166,12 @@ def submit_eagle_attempt(team_id):
         5. End the Game
     '''
     footprints = init_eagle(team_id)
-    rec(footprints,first=True)
+    # rec(footprints,first=True)
+    sol(footprints)
     res = end_eagle(team_id)
     print('res: ', res.text)
 
 
-# submit_eagle_attempt(team_id)
+submit_eagle_attempt(team_id)
+
+# get_remaining_attempts(team_id)
