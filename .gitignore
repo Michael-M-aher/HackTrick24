@@ -1,3 +1,4 @@
 Spectogram Model/data/fake.npz
 Spectogram Model/data/real.npz
 Solvers/model/model.h5
+Solvers/model/model_footprints.h5
