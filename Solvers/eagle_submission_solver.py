@@ -23,7 +23,8 @@ def load_tf_model():
     '''
     Load your model here and return it
     '''
-    model = load_model('model_footprints')
+    model = load_model('model/model_footprints.h5')
+    # model = load_model('model/model.h5')
     return model
 
 scaler = load_scaler()
@@ -166,12 +167,12 @@ def submit_eagle_attempt(team_id):
         5. End the Game
     '''
     footprints = init_eagle(team_id)
-    # rec(footprints,first=True)
-    sol(footprints)
+    rec(footprints,first=True)
+    # sol(footprints)
     res = end_eagle(team_id)
     print('res: ', res.text)
 
 
-submit_eagle_attempt(team_id)
+# submit_eagle_attempt(team_id)
 
-# get_remaining_attempts(team_id)
+get_remaining_attempts(team_id)
